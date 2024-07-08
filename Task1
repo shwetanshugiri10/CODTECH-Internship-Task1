@@ -1,0 +1,49 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load the Iris dataset
+from sklearn.datasets import load_iris
+iris = load_iris()
+df = pd.DataFrame(data=iris.data, columns=iris.feature_names)
+df['target'] = iris.target
+
+# Explore the data's characteristics
+print(df.info())
+print(df.describe())
+
+# Visualize the distributions of each feature
+plt.figure(figsize=(10, 6))
+sns.boxplot(data=df.iloc[:, :4])
+plt.title("Boxplot of Features")
+plt.show()
+
+# Visualize the correlations between features
+plt.figure(figsize=(8, 6))
+sns.heatmap(df.corr(), annot=True, cmap="coolwarm", linewidths=0.5)
+plt.title("Correlation Matrix")
+plt.show()
+
+# Visualize the scatter plot of each feature against the target variable
+plt.figure(figsize=(12, 10))
+sns.scatterplot(x="sepal length (cm)", y="sepal width (cm)", hue="target", data=df)
+plt.title("Scatter Plot of Sepal Length vs Sepal Width")
+plt.show()
+
+plt.figure(figsize=(12, 10))
+sns.scatterplot(x="petal length (cm)", y="petal width (cm)", hue="target", data=df)
+plt.title("Scatter Plot of Petal Length vs Petal Width")
+plt.show()
+
+# Identify outliers using the Z-score method
+from scipy import stats
+z_scores = np.abs(stats.zscore(df.iloc[:, :4]))
+print("Outliers:")
+print(df[(z_scores > 3).any(axis=1)])
+
+# Visualize the outliers using a scatter plot
+plt.figure(figsize=(12, 10))
+sns.scatterplot(x="sepal length (cm)", y="sepal width (cm)", data=df[(z_scores > 3).any(axis=1)])
+plt.title("Outliers in Sepal Length vs Sepal Width")
+plt.show()
